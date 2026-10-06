@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Opening Wikipedia…</title>
+<script>
+(function () {
+  var TRACKER = 'https://script.google.com/macros/s/AKfycbwShoqQmxPkRVxy-sx8VKskPT2mFQtVnHhIzD8MVSALIOLSdXsJLVtP2JuW-GDxR_nb/exec';
+  var p = new URLSearchParams(location.search);
+  var id = (p.get('id') || '').toUpperCase();
+  var u = p.get('u') || '';
+  // Only ever redirect to English Wikipedia articles (no open redirect).
+  var ok = /^https:\/\/en\.wikipedia\.org\/wiki\/[^\s<>"'`\\]+$/.test(u) && u.indexOf('..') === -1;
+  if (!ok) { window.__bad = true; return; }
+  if (/^LH\d{4,}$/.test(id)) {
+    var log = TRACKER + '?t=c&id=' + encodeURIComponent(id) + '&u=' + encodeURIComponent(u);
+    try { fetch(log, { mode: 'no-cors', keepalive: true, credentials: 'omit' }); }
+    catch (e) { (new Image()).src = log; }
+  }
+  setTimeout(function () { location.replace(u); }, 120);
+  window.__dest = u;
+})();
+</script>
+<style>body{font-family:system-ui,sans-serif;color:#333;padding:3em;text-align:center}</style>
+</head><body>
+<p id="msg">Opening Wikipedia…</p>
+<script>
+if (window.__bad) { document.getElementById('msg').textContent = 'This link is not valid.'; }
+else if (window.__dest) {
+  var a = document.createElement('a'); a.href = window.__dest; a.textContent = 'Continue to the page';
+  document.getElementById('msg').appendChild(document.createTextNode(' ')); document.getElementById('msg').appendChild(a);
+}
+</script>
+</body></html>
